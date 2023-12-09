@@ -7,7 +7,7 @@ then
     POSTGRES_DB="wbr_db"
     POSTGRES_USER="wbr_user"
     POSTGRES_PASSWORD=${DB_PASSWORD}
-    DATABASE_HOST="dpg-clq50eqe9h4c73aib1s0-a"
+    DATABASE_HOST="dpg-clq50eqe9h4c73aib1s0-a.ohio-postgres.render.com"
     DATABASE_PORT=5432
 else
     POSTGRES_DB="wbr_db"
