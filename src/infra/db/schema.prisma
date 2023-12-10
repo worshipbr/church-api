@@ -11,12 +11,91 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Church {
+  id          Int      @id @default(autoincrement())
+  name        String   @db.VarChar(120)
+  description String   @db.VarChar(255)
+  active      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  user      User[]
+  guest     Guest[]
+  companion Companion[]
+
+  @@map("churchs")
+}
+
 model User {
   id        Int      @id @default(autoincrement())
   name      String   @db.VarChar(80)
   email     String   @unique @db.VarChar(255)
+  password  String?  @db.VarChar(255)
+  phone     String?  @db.VarChar(18)
+  logo      String?  @db.VarChar(255)
+  active    Boolean  @default(false)
+  churchId  Int?
+  roleId    Int
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  church      Church?       @relation(fields: [churchId], references: [id])
+  role        Role          @relation(fields: [roleId], references: [id])
+  Departament Departament[]
 
   @@map("users")
+}
+
+model Guest {
+  id            Int     @id @default(autoincrement())
+  name          String  @db.VarChar(80)
+  phone         String? @db.VarChar(19)
+  churchId      Int
+  departamentId Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  church      Church       @relation(fields: [churchId], references: [id])
+  departament Departament? @relation(fields: [departamentId], references: [id])
+
+  @@map("guests")
+}
+
+model Companion {
+  id       Int    @id @default(autoincrement())
+  name     String @db.VarChar(80)
+  churchId Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  church Church @relation(fields: [churchId], references: [id])
+
+  @@map("companions")
+}
+
+model Role {
+  id   Int    @id @default(autoincrement())
+  name String @db.VarChar(80)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @map("updated_at")
+  user      User[]
+
+  @@map("roles")
+}
+
+model Departament {
+  id     Int    @id @default(autoincrement())
+  name   String @db.VarChar(80)
+  leadId Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user  User    @relation(fields: [leadId], references: [id])
+  guest Guest[]
+
+  @@map("departaments")
 }

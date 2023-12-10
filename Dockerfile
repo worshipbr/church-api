@@ -1,4 +1,6 @@
-FROM node:18-alpine As development
+FROM node:18-slim As development
+
+RUN apt-get update -y && apt-get install -y openssl
 
 WORKDIR /usr/src/app
 
@@ -16,7 +18,9 @@ USER node
 # BUILD FOR PRODUCTION
 ###################
 
-FROM node:18-alpine As build
+FROM node:18-slim As build
+
+RUN apt-get update -y && apt-get install -y openssl
 
 WORKDIR /usr/src/app
 
@@ -40,7 +44,9 @@ USER node
 # PRODUCTION
 ###################
 
-FROM node:18-alpine As production
+FROM node:18-slim As production
+
+RUN apt-get update -y && apt-get install -y openssl
 
 WORKDIR /app
 
