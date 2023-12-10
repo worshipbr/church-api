@@ -32,6 +32,8 @@ ENV NODE_ENV production
 
 RUN npm ci --only=production && npm cache clean --force
 
+COPY --chown=node:node --from=development /usr/src/app/node_modules/.prisma ./node_modules/.prisma
+
 USER node
 
 ###################
