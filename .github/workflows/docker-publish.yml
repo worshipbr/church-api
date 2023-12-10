@@ -15,6 +15,7 @@ env:
   # Use docker.io for Docker Hub if empty
   ENVIRONMENT: prod
   DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+  DEPLOY_URL: ${{ secrets.DEPLOY_WEBHOOK }}
   REGISTRY: ghcr.io
   # github.repository as <account>/<repo>
   IMAGE_NAME: ${{ github.repository }}
@@ -63,3 +64,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Deploy
+        run: |
+          curl "$DEPLOY_URL"
