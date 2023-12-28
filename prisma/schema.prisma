@@ -19,10 +19,12 @@ model Church {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt @map("updated_at")
 
-  user      User[]
-  guest     Guest[]
-  companion Companion[]
-  note      Note[]
+  users        User[]
+  guests       Guest[]
+  // notes        Note[]
+  departaments Departament[]
+  visits       Visit[]
+  // agendas      Agenda[]
 
   @@map("churchs")
 }
@@ -54,30 +56,32 @@ model Guest {
   phone         String? @db.VarChar(19)
   churchId      Int
   departamentId Int?
+  parentId      Int?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt @map("updated_at")
 
   church      Church       @relation(fields: [churchId], references: [id])
   departament Departament? @relation(fields: [departamentId], references: [id])
-  companion   Companion[]
+  parent      Guest?       @relation("ParentGuest", fields: [parentId], references: [id])
+  compenions  Guest[]      @relation("ParentGuest")
+  visits      Visit[]
 
   @@map("guests")
 }
 
-model Companion {
-  id       Int    @id @default(autoincrement())
-  name     String @db.VarChar(80)
-  churchId Int
-  guestId  Int
+model Visit {
+  id        Int      @id @default(autoincrement())
+  visitDate DateTime @map("visit_date")
+  guest     Guest?   @relation(fields: [guestId], references: [id])
+  guestId   Int?
+  church    Church?  @relation(fields: [churchId], references: [id])
+  churchId  Int?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  church Church @relation(fields: [churchId], references: [id])
-  guest  Guest  @relation(fields: [guestId], references: [id])
-
-  @@map("companions")
+  @@map("visits")
 }
 
 model Role {
@@ -98,9 +102,11 @@ model Departament {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  guest   Guest[]
-  leaders DepartamentLeader[]
-  users   User[]
+  guest    Guest[]
+  leaders  DepartamentLeader[]
+  users    User[]
+  Church   Church?             @relation(fields: [churchId], references: [id])
+  churchId Int?
 
   @@map("departaments")
 }
@@ -115,17 +121,29 @@ model DepartamentLeader {
   @@map("departament_leaders")
 }
 
-model Note {
-  id          Int      @id @default(autoincrement())
-  description String   @db.Inet
-  image       String   @db.VarChar(255)
-  data        DateTime @db.Timestamp()
-  churchId    Int
+// model Note {
+//   id          Int    @id @default(autoincrement())
+//   description String @db.Inet
+//   image       String @db.VarChar(255)
+//   churchId    Int
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt @map("updated_at")
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt @map("updated_at")
 
-  church Church @relation(fields: [churchId], references: [id])
+//   church  Church   @relation(fields: [churchId], references: [id])
+//   agendas Agenda[]
 
-  @@map("notes")
-}
+//   @@map("notes")
+// }
+
+// model Agenda {
+//   id   Int      @id @default(autoincrement())
+//   date DateTime
+
+//   note     Note?   @relation(fields: [noteId], references: [id])
+//   noteId   Int?
+//   church   Church? @relation(fields: [churchId], references: [id])
+//   churchId Int?
+
+//   @@map("agendas")
+// }
