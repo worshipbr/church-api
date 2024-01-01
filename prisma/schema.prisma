@@ -45,7 +45,6 @@ model User {
   church       Church?             @relation(fields: [churchId], references: [id])
   role         Role                @relation(fields: [roleId], references: [id])
   departaments DepartamentLeader[]
-  departement  Departament[]
 
   @@map("users")
 }
@@ -104,8 +103,7 @@ model Departament {
 
   guest    Guest[]
   leaders  DepartamentLeader[]
-  users    User[]
-  Church   Church?             @relation(fields: [churchId], references: [id])
+  church   Church?             @relation(fields: [churchId], references: [id])
   churchId Int?
 
   @@map("departaments")
